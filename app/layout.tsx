@@ -3,6 +3,7 @@ import { Noto_Sans_Thai, Inter } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/components/providers'
 import { Toaster } from 'sonner'
+import NextTopLoader from 'nextjs-toploader'
 import Navbar from '@/components/layout/navbar'
 import { auth } from '@/auth'
 
@@ -32,6 +33,17 @@ export default async function RootLayout({
   return (
     <html lang="th" suppressHydrationWarning>
       <body className={`${notoSansThai.variable} ${inter.variable} font-thai antialiased`}>
+        <NextTopLoader
+          color="var(--color-primary)"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px var(--color-primary),0 0 5px var(--color-primary)"
+        />
         <Providers>
           <Navbar session={session} />
           <div style={{ paddingTop: '80px' }}>

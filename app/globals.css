@@ -134,19 +134,18 @@
 
   /* Secondary Button - Minimal Outline */
   .btn-secondary {
-    background: transparent;
-    color: var(--color-primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--color-bg-hover); color: var(--color-text);
+    padding: 0.75rem 1.5rem; border-radius: 99px;
+    font-weight: 600; text-decoration: none; transition: all 0.2s ease;
     border: 1px solid var(--color-border);
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
   }
-  .btn-secondary:hover {
-    background: var(--color-bg-hover);
-    border-color: var(--color-primary);
-    transform: translateY(-2px);
+  .btn-secondary:hover { background: var(--color-border); transform: translateY(-2px); }
+  
+  /* Tactile feedback for mobile active states */
+  .btn-primary:active, .btn-secondary:active, .product-card:active {
+    transform: scale(0.98);
   }
 
   /* Input Styles */
@@ -321,6 +320,17 @@
   @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.6; transform: scale(0.8); }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .skeleton-loader {
+    animation: shimmer 1.5s infinite linear;
+    background: linear-gradient(90deg, var(--color-bg-hover) 25%, var(--color-border) 50%, var(--color-bg-hover) 75%);
+    background-size: 200% 100%;
   }
 
   /* Mobile Sticky Cart */
