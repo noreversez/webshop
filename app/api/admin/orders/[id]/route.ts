@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
   if (!session || session.user?.role !== 'ADMIN') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -11,8 +11,10 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const body = await req.json()
   const { status, slipVerified, trackingNum, awardPoints } = body
 
+  const { id } = await params
+
   const order = await prisma.order.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: { user: true },
   })
 
@@ -27,7 +29,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   // Update order + optionally award points in a transaction
   await prisma.$transaction(async (tx) => {
     await tx.order.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         status,
         slipVerified: slipVerified ?? order.slipVerified,
@@ -59,14 +61,16 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   return NextResponse.json({ success: true, pointsAwarded: pointsToAward })
 }
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
   if (!session || session.user?.role !== 'ADMIN') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const { id } = await params
+
   const order = await prisma.order.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       user: true,
       items: {
