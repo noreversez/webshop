@@ -18,5 +18,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   if (!product) notFound()
 
-  return <ProductDetailClient product={product} isLoggedIn={!!session} />
+  return <ProductDetailClient product={{
+    ...product,
+    variants: product.variants.map(v => ({ ...v, price: Number(v.price) }))
+  }} isLoggedIn={!!session} />
 }

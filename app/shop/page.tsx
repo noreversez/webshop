@@ -130,7 +130,10 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
             gap: '1.5rem',
           }}>
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={{
+                ...product,
+                variants: product.variants.map(v => ({ ...v, price: Number(v.price) }))
+              }} />
             ))}
           </div>
         )}
