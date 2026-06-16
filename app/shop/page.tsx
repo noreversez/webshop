@@ -24,11 +24,12 @@ async function getCategories() {
   return prisma.category.findMany({ orderBy: { name: 'asc' } })
 }
 
-export default async function ShopPage({ searchParams }: { searchParams: { search?: string, category?: string } }) {
+export default async function ShopPage({ searchParams }: { searchParams: Promise<{ search?: string, category?: string }> }) {
   const session = await auth()
+  const params = await searchParams
 
   const [products, categories] = await Promise.all([
-    getProducts(searchParams.search, searchParams.category),
+    getProducts(params.search, params.category),
     getCategories(),
   ])
 
@@ -69,7 +70,7 @@ export default async function ShopPage({ searchParams }: { searchParams: { searc
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
               <input
                 name="search"
-                defaultValue={searchParams.search}
+                defaultValue={params.search}
                 placeholder="ค้นหาสินค้า..."
                 className="input-styled"
                 style={{ flex: 1, minWidth: '200px', maxWidth: '400px' }}
@@ -89,9 +90,9 @@ export default async function ShopPage({ searchParams }: { searchParams: { searc
               style={{
                 padding: '0.4rem 1rem', borderRadius: '99px', fontSize: '0.85rem',
                 textDecoration: 'none', border: '1px solid var(--color-border)',
-                background: !searchParams.category ? 'var(--color-primary-glow)' : 'transparent',
-                color: !searchParams.category ? 'var(--color-primary)' : 'var(--color-text-muted)',
-                borderColor: !searchParams.category ? 'rgba(232,160,160,0.4)' : 'var(--color-border)',
+                background: !params.category ? 'var(--color-primary-glow)' : 'transparent',
+                color: !params.category ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                borderColor: !params.category ? 'rgba(232,160,160,0.4)' : 'var(--color-border)',
                 transition: 'all 0.2s ease',
               }}
             >
@@ -104,9 +105,9 @@ export default async function ShopPage({ searchParams }: { searchParams: { searc
                 style={{
                   padding: '0.4rem 1rem', borderRadius: '99px', fontSize: '0.85rem',
                   textDecoration: 'none', border: '1px solid var(--color-border)',
-                  background: searchParams.category === cat.slug ? 'var(--color-primary-glow)' : 'transparent',
-                  color: searchParams.category === cat.slug ? 'var(--color-primary)' : 'var(--color-text-muted)',
-                  borderColor: searchParams.category === cat.slug ? 'rgba(232,160,160,0.4)' : 'var(--color-border)',
+                  background: params.category === cat.slug ? 'var(--color-primary-glow)' : 'transparent',
+                  color: params.category === cat.slug ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                  borderColor: params.category === cat.slug ? 'rgba(232,160,160,0.4)' : 'var(--color-border)',
                   transition: 'all 0.2s ease',
                 }}
               >

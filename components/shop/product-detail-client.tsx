@@ -46,10 +46,7 @@ export default function ProductDetailClient({
 
   const addToCart = () => {
     if (!selectedVariant) return
-    if (!isLoggedIn) {
-      router.push('/login')
-      return
-    }
+
 
     // Get cart from localStorage
     const cartRaw = localStorage.getItem('cart')
