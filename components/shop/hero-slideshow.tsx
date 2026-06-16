@@ -31,7 +31,7 @@ export default function HeroSlideshow() {
   }, [])
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', borderRadius: '16px' }}>
+    <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', borderRadius: '16px', background: '#111' }}>
       {slides.map((slide, index) => (
         <div
           key={index}
@@ -50,6 +50,8 @@ export default function HeroSlideshow() {
           <img
             src={slide.image}
             alt={slide.title}
+            loading="eager"
+            decoding="async"
             style={{ 
               width: '100%', 
               height: '100%', 
