@@ -44,15 +44,7 @@ export default function CartPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--color-bg)' }}>
-      {/* Navbar */}
-      <nav style={{ background: 'rgba(10,10,15,0.9)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--color-border)', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div className="container-custom" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.5rem' }}>
-          <Link href="/" style={{ textDecoration: 'none' }}>
-            <span className="gradient-text" style={{ fontSize: '1.25rem', fontWeight: 700 }}>FASHION STORE</span>
-          </Link>
-          <Link href="/shop" style={{ color: 'var(--color-text-muted)', textDecoration: 'none', fontSize: '0.9rem' }}>← กลับเลือกสินค้า</Link>
-        </div>
-      </nav>
+
 
       <div className="container-custom" style={{ padding: '2rem 1.5rem', maxWidth: '800px' }}>
         <h1 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: '2rem' }}>🛒 ตะกร้าสินค้า</h1>

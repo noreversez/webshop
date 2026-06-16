@@ -35,30 +35,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--color-bg)' }}>
-      {/* Navbar */}
-      <nav style={{
-        background: 'rgba(10,10,15,0.9)', backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid var(--color-border)',
-        position: 'sticky', top: 0, zIndex: 50,
-      }}>
-        <div className="container-custom" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.5rem' }}>
-          <Link href="/" style={{ textDecoration: 'none' }}>
-            <span className="gradient-text" style={{ fontSize: '1.25rem', fontWeight: 700 }}>FASHION STORE</span>
-          </Link>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            {session ? (
-              <>
-                <Link href="/cart" className="btn-secondary" style={{ textDecoration: 'none', padding: '0.5rem 1rem', fontSize: '0.85rem' }}>🛒 ตะกร้า</Link>
-                <Link href="/profile">
-                  {session.user?.image && <img src={session.user.image} alt="" style={{ width: 36, height: 36, borderRadius: '50%', border: '2px solid var(--color-primary)' }} />}
-                </Link>
-              </>
-            ) : (
-              <Link href="/login" className="btn-primary" style={{ textDecoration: 'none', padding: '0.5rem 1.25rem', fontSize: '0.85rem' }}>เข้าสู่ระบบ</Link>
-            )}
-          </div>
-        </div>
-      </nav>
+
 
       <div className="container-custom" style={{ padding: '2rem 1.5rem' }}>
         {/* Header + Search */}

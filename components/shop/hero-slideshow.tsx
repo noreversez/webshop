@@ -50,7 +50,15 @@ export default function HeroSlideshow() {
           <img
             src={slide.image}
             alt={slide.title}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', zIndex: -1 }}
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              objectFit: 'cover', 
+              position: 'absolute', 
+              zIndex: -1,
+              transform: index === currentSlide ? 'scale(1.05)' : 'scale(1)',
+              transition: 'transform 6s ease-out, opacity 1s ease-in-out'
+            }}
           />
           {/* Minimal overlay for text readability */}
           <div style={{

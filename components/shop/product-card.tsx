@@ -14,7 +14,8 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const primaryImage = product.images[0]
+  const primaryImage = product.images.find(img => img.isPrimary) || product.images[0]
+  const secondaryImage = product.images.find(img => img.url !== primaryImage?.url) || primaryImage
   const minPrice = product.variants.length > 0
     ? Math.min(...product.variants.map((v) => Number(v.price)))
     : 0
@@ -31,11 +32,22 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Product Image */}
         <div style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', background: 'var(--color-bg-hover)' }}>
           {primaryImage ? (
-            <img
-              src={primaryImage.url}
-              alt={product.name}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
-            />
+            <div className="product-image-container" style={{ width: '100%', height: '100%', position: 'relative' }}>
+              <img
+                src={primaryImage.url}
+                alt={product.name}
+                className="product-image-primary"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.4s ease, transform 0.5s ease', position: 'absolute', inset: 0 }}
+              />
+              {secondaryImage && secondaryImage.url !== primaryImage.url && (
+                <img
+                  src={secondaryImage.url}
+                  alt={`${product.name} alternate`}
+                  className="product-image-secondary"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.4s ease, transform 0.5s ease', position: 'absolute', inset: 0, opacity: 0 }}
+                />
+              )}
+            </div>
           ) : (
             <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem', color: 'var(--color-border)' }}>
               👗
@@ -55,10 +67,33 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
 
           {product.category && (
-            <div style={{ position: 'absolute', top: '0.75rem', left: '0.75rem' }}>
+            <div style={{ position: 'absolute', top: '0.75rem', left: '0.75rem', zIndex: 10 }}>
               <span className="badge badge-primary" style={{ fontSize: '0.7rem' }}>{product.category.name}</span>
             </div>
           )}
+
+          {/* Quick Add Overlay */}
+          <div className="product-card-overlay" style={{
+            position: 'absolute',
+            bottom: '0.75rem', left: '0.75rem', right: '0.75rem',
+            opacity: 0,
+            transform: 'translateY(10px)',
+            transition: 'all 0.3s ease',
+            zIndex: 10,
+          }}>
+            <div style={{
+              background: 'rgba(255,255,255,0.95)',
+              backdropFilter: 'blur(4px)',
+              padding: '0.6rem',
+              textAlign: 'center',
+              borderRadius: '8px',
+              fontWeight: 600,
+              fontSize: '0.85rem',
+              color: 'var(--color-primary)'
+            }}>
+              เลือกตัวเลือกสินค้า
+            </div>
+          </div>
         </div>
 
         {/* Product Info */}

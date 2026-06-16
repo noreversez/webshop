@@ -266,7 +266,19 @@
   .product-card:hover {
     border-color: var(--color-primary);
     transform: translateY(-6px);
-    box-shadow: 0 24px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(232,160,160,0.2);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05);
+  }
+  .product-card:hover .product-image-primary {
+    opacity: 0 !important;
+    transform: scale(1.05);
+  }
+  .product-card:hover .product-image-secondary {
+    opacity: 1 !important;
+    transform: scale(1.05);
+  }
+  .product-card:hover .product-card-overlay {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
   }
 
   /* Status colors for orders */
@@ -309,5 +321,26 @@
   @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.6; transform: scale(0.8); }
+  }
+
+  /* Mobile Sticky Cart */
+  .mobile-sticky-cart {
+    display: none;
+  }
+  @media (max-width: 768px) {
+    .mobile-sticky-cart {
+      display: block;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+    }
+    
+    /* Add padding to bottom of page on mobile to prevent content from being hidden */
+    body {
+      padding-bottom: 80px;
+    }
   }
 }

@@ -7,55 +7,11 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen" style={{ background: 'var(--color-bg)', color: 'var(--color-text)' }}>
-      {/* Navigation - Minimal */}
-      <nav style={{
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid var(--color-border)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-      }}>
-        <div className="container-custom" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.5rem' }}>
-          <Link href="/" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>
-            <div>
-              <span style={{ fontSize: '1.25rem', fontWeight: 700, letterSpacing: '-0.02em' }}>
-                FASHION
-              </span>
-              <span style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem', marginLeft: '0.5rem', letterSpacing: '0.1em' }}>
-                STORE
-              </span>
-            </div>
-          </Link>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <Link href="/shop" style={{ textDecoration: 'none', fontSize: '0.9rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>
-              สินค้า
-            </Link>
-            {session ? (
-              <Link href="/profile" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-                {session.user?.image ? (
-                  <img
-                    src={session.user.image}
-                    alt="Profile"
-                    style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }}
-                  />
-                ) : (
-                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--color-bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
-                )}
-              </Link>
-            ) : (
-              <Link href="/login" style={{ textDecoration: 'none', fontSize: '0.9rem', color: 'var(--color-text)', fontWeight: 500 }}>
-                เข้าสู่ระบบ
-              </Link>
-            )}
-          </div>
-        </div>
-      </nav>
 
       {/* Hero Section - Split Layout */}
       <section style={{
-        minHeight: 'calc(100vh - 65px)',
+        minHeight: 'calc(100vh - 80px)',
         display: 'flex',
         alignItems: 'center',
         padding: '2rem 1.5rem',

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 interface Variant {
   id: string
@@ -19,6 +20,26 @@ interface Product {
   images: { id: string; url: string; isPrimary: boolean }[]
   variants: Variant[]
   category: { name: string; slug: string } | null
+}
+
+const COLOR_MAP: Record<string, string> = {
+  'ดำ': '#111111', 'black': '#111111',
+  'ขาว': '#ffffff', 'white': '#ffffff',
+  'ครีม': '#f5f5dc', 'cream': '#f5f5dc', 'เบจ': '#f5f5dc',
+  'เทา': '#808080', 'gray': '#808080', 'grey': '#808080',
+  'น้ำเงิน': '#0f172a', 'blue': '#0f172a', 'กรม': '#0f172a',
+  'แดง': '#dc143c', 'red': '#dc143c',
+  'เขียว': '#228b22', 'green': '#228b22', 'โอลีฟ': '#556b2f',
+  'ชมพู': '#ffc0cb', 'pink': '#ffc0cb',
+  'น้ำตาล': '#8b4513', 'brown': '#8b4513',
+}
+
+const getSwatchColor = (colorName: string) => {
+  const normalized = colorName.toLowerCase().trim()
+  for (const [key, val] of Object.entries(COLOR_MAP)) {
+    if (normalized.includes(key)) return val
+  }
+  return null
 }
 
 export default function ProductDetailClient({
@@ -69,25 +90,25 @@ export default function ProductDetailClient({
     }
 
     localStorage.setItem('cart', JSON.stringify(cart))
+    window.dispatchEvent(new Event('cart-updated'))
+    
+    toast.success('เพิ่มสินค้าลงตะกร้าแล้ว', {
+      description: `${product.name} (สี: ${selectedVariant.color}, ไซส์: ${selectedVariant.size})`,
+      action: {
+        label: 'ดูตะกร้า',
+        onClick: () => {
+          // You could open drawer here, but toast action triggers it indirectly if they click navbar icon
+          // Or just let them click Navbar icon.
+        }
+      }
+    })
+    
     setAddedToCart(true)
     setTimeout(() => setAddedToCart(false), 2000)
   }
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--color-bg)' }}>
-      {/* Navbar */}
-      <nav style={{ background: 'rgba(10,10,15,0.9)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--color-border)', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div className="container-custom" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.5rem' }}>
-          <Link href="/" style={{ textDecoration: 'none' }}>
-            <span className="gradient-text" style={{ fontSize: '1.25rem', fontWeight: 700 }}>FASHION STORE</span>
-          </Link>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <Link href="/shop" style={{ color: 'var(--color-text-muted)', textDecoration: 'none', fontSize: '0.9rem' }}>← กลับ</Link>
-            <Link href="/cart" className="btn-secondary" style={{ textDecoration: 'none', padding: '0.5rem 1rem', fontSize: '0.85rem' }}>🛒 ตะกร้า</Link>
-          </div>
-        </div>
-      </nav>
-
       <div className="container-custom" style={{ padding: '2rem 1.5rem' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'start' }}>
 
@@ -147,25 +168,36 @@ export default function ProductDetailClient({
                 สี: {selectedColor && <span style={{ color: 'var(--color-text)' }}>{selectedColor}</span>}
               </div>
               <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                {colors.map((color) => (
+                {colors.map((color) => {
+                  const swatchHex = getSwatchColor(color)
+                  return (
                   <button
                     key={color}
                     onClick={() => { setSelectedColor(color); setSelectedSize(null) }}
+                    title={color}
                     style={{
-                      padding: '0.5rem 1.25rem',
-                      borderRadius: '99px',
-                      border: selectedColor === color ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
-                      background: selectedColor === color ? 'var(--color-primary-glow)' : 'transparent',
-                      color: selectedColor === color ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                      width: swatchHex ? 40 : 'auto',
+                      height: 40,
+                      padding: swatchHex ? 0 : '0 1.25rem',
+                      borderRadius: swatchHex ? '50%' : '99px',
+                      border: selectedColor === color 
+                        ? '2px solid var(--color-primary)' 
+                        : '1px solid var(--color-border)',
+                      background: swatchHex || (selectedColor === color ? 'var(--color-primary-glow)' : 'transparent'),
+                      color: swatchHex ? 'transparent' : (selectedColor === color ? 'var(--color-primary)' : 'var(--color-text-muted)'),
                       cursor: 'pointer',
                       fontSize: '0.9rem',
                       transition: 'all 0.2s ease',
                       fontFamily: 'var(--font-thai)',
+                      boxShadow: selectedColor === color ? '0 0 0 2px white inset' : 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                     }}
                   >
-                    {color}
+                    {!swatchHex && color}
                   </button>
-                ))}
+                )})}
               </div>
             </div>
 
@@ -228,7 +260,7 @@ export default function ProductDetailClient({
               </div>
             )}
 
-            {/* Add to Cart */}
+            {/* Add to Cart Sticky mobile bar will be handled later, standard button here */}
             <button
               onClick={addToCart}
               disabled={!selectedVariant || selectedVariant.stock === 0}
@@ -240,19 +272,44 @@ export default function ProductDetailClient({
                 opacity: !selectedVariant ? 0.5 : 1,
                 cursor: !selectedVariant ? 'not-allowed' : 'pointer',
                 background: addedToCart
-                  ? 'linear-gradient(135deg, #4ade80, #22c55e)'
+                  ? 'var(--color-success)'
                   : undefined,
+                color: addedToCart ? 'white' : undefined,
               }}
             >
-              {addedToCart ? '✅ เพิ่มลงตะกร้าแล้ว!' : !selectedVariant ? 'กรุณาเลือกสีและไซส์' : '🛒 เพิ่มลงตะกร้า'}
+              {addedToCart ? '✅ เพิ่มลงตะกร้าแล้ว!' : !selectedVariant ? 'กรุณาเลือกสีและไซส์' : 'เพิ่มลงตะกร้า'}
             </button>
-
-            {addedToCart && (
-              <Link href="/cart" className="btn-secondary" style={{ textDecoration: 'none', textAlign: 'center', fontSize: '0.95rem' }}>
-                ไปที่ตะกร้าสินค้า →
-              </Link>
-            )}
           </div>
+        </div>
+      </div>
+
+      {/* Mobile Sticky Add-to-Cart Bar */}
+      <div className="mobile-sticky-cart">
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.5rem', background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(10px)', borderTop: '1px solid var(--color-border)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>ยอดรวม</span>
+            <span className="gradient-text" style={{ fontSize: '1.25rem', fontWeight: 700 }}>
+              {selectedVariant
+                ? `฿${(Number(selectedVariant.price) * quantity).toLocaleString('th-TH')}`
+                : `฿${Math.min(...product.variants.map(v => Number(v.price))).toLocaleString('th-TH')}`}
+            </span>
+          </div>
+          <button
+            onClick={addToCart}
+            disabled={!selectedVariant || selectedVariant.stock === 0}
+            className="btn-primary"
+            style={{
+              flex: 1,
+              maxWidth: '200px',
+              padding: '0.8rem',
+              fontSize: '0.95rem',
+              opacity: !selectedVariant ? 0.5 : 1,
+              background: addedToCart ? 'var(--color-success)' : undefined,
+              color: addedToCart ? 'white' : undefined,
+            }}
+          >
+            {addedToCart ? '✅ เพิ่มแล้ว' : '🛒 ซื้อเลย'}
+          </button>
         </div>
       </div>
     </div>
