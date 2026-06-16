@@ -118,7 +118,7 @@ export default function ProductDetailClient({
               {product.images[activeImage] ? (
                 <img src={product.images[activeImage].url} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
-                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '5rem', color: 'var(--color-border)' }}>👗</div>
+                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '5rem', color: 'var(--color-border)' }}>👕</div>
               )}
             </div>
             {product.images.length > 1 && (

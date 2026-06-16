@@ -50,7 +50,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
           ) : (
             <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem', color: 'var(--color-border)' }}>
-              👗
+              👕
             </div>
           )}
 
