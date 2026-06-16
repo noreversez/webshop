@@ -16,13 +16,7 @@ export default async function HomePage() {
         alignItems: 'center',
         padding: '2rem 1.5rem',
       }}>
-        <div className="container-custom" style={{ 
-          display: 'grid', 
-          gridTemplateColumns: '1fr 1fr', 
-          gap: '4rem', 
-          alignItems: 'center',
-          height: '100%',
-        }}>
+        <div className="container-custom grid-split grid-split-lg" style={{ height: '100%' }}>
           
           <div className="fade-in" style={{ paddingRight: '2rem' }}>
             <p style={{ textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '0.1em', color: 'var(--color-text-muted)', marginBottom: '1.5rem', fontWeight: 500 }}>
@@ -49,7 +43,7 @@ export default async function HomePage() {
               ค้นพบเสื้อผ้าพรีเมียมที่เน้นความมินิมอล พร้อมประสบการณ์สั่งซื้อง่ายๆ ผ่าน LINE
             </p>
 
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <div className="hero-buttons">
               <Link href="/shop" className="btn-primary" style={{ textDecoration: 'none', fontSize: '0.95rem', padding: '0.9rem 2.5rem' }}>
                 เลือกซื้อสินค้า
               </Link>

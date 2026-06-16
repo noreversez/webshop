@@ -4,7 +4,7 @@ export default function ProductDetailLoading() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--color-bg)' }}>
       <div className="container-custom" style={{ padding: '2rem 1.5rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'start' }}>
+        <div className="grid-split align-start">
           
           {/* Images Skeleton */}
           <div>
