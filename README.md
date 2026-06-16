@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 👗 Fashion Store — LINE LIFF E-Commerce
 
-## Getting Started
+ระบบร้านขายเสื้อผ้าออนไลน์พรีเมียม พัฒนาด้วย Next.js รองรับการล็อกอินผ่าน LINE LIFF พร้อมระบบ CRM สะสมแต้ม และหน้าแอดมินจัดการสินค้า/ออเดอร์/สลิปโอนเงิน
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✨ ฟีเจอร์หลัก
+
+### 🛍️ ฝั่งลูกค้า (LINE LIFF Web App)
+- **ล็อกอินด้วย LINE** — ไม่ต้องจำรหัสผ่าน
+- **เลือกสินค้าตามสี & ไซส์** — สต็อกอัปเดต real-time
+- **ตะกร้าสินค้า** — บันทึกในเครื่อง
+- **Checkout 2 ขั้นตอน** — กรอกที่อยู่ + แนบสลิปโอนเงิน
+- **โปรไฟล์ & ประวัติซื้อ** — ดูสถานะออเดอร์ทุกรายการ
+- **ระบบสะสมแต้ม** — ได้แต้มอัตโนมัติเมื่อออเดอร์ได้รับการยืนยัน
+
+### 🛡️ ฝั่งแอดมิน (Backoffice)
+- **Dashboard** — ยอดขาย, จำนวนออเดอร์, ลูกค้า, รายได้รวม
+- **จัดการสินค้า** — เพิ่ม/แก้ไขสินค้า พร้อมตัวเลือก สี/ไซส์/ราคา/สต็อก
+- **อัปโหลดรูปภาพ** — เก็บบน Google Drive อัตโนมัติ
+- **ตรวจสอบสลิป** — ดูรูปสลิป กด "อนุมัติ" ระบบเพิ่มแต้มให้ลูกค้าอัตโนมัติ
+- **ติดตามการจัดส่ง** — อัปเดตเลขพัสดุ + สถานะ
+- **จัดการลูกค้า** — ดูยอดซื้อรวม, แต้มสะสม
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Framework** | Next.js 16 (App Router, TypeScript) |
+| **Styling** | Tailwind CSS + Custom Luxury Dark Theme |
+| **Database** | PostgreSQL |
+| **ORM** | Prisma v5 |
+| **Auth** | NextAuth.js v5 (LINE OAuth + Credentials) |
+| **Storage** | Google Drive API (รูปสินค้า + สลิปโอนเงิน) |
+| **LINE** | LINE Login + LIFF SDK |
+
+---
+
+## 🗃️ โครงสร้างฐานข้อมูล
+
+```
+User           → ข้อมูลลูกค้า LINE (lineId, name, image, points)
+Admin          → แอดมิน (username, password hash)
+Category       → หมวดหมู่สินค้า
+Product        → สินค้าหลัก
+ProductImage   → รูปภาพ (เก็บ fileId บน Google Drive)
+ProductVariant → ตัวเลือก (สี, ไซส์, ราคา, สต็อก)
+Order          → ออเดอร์ (status, slipUrl, trackingNum)
+OrderItem      → รายการสินค้าในออเดอร์
+PointTransaction → ประวัติการได้/ใช้แต้ม
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 วิธีติดตั้งและรัน
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Clone & ติดตั้ง dependencies
+```bash
+git clone https://github.com/YOUR_USERNAME/fashion-store.git
+cd fashion-store
+npm install
+```
 
-## Learn More
+### 2. ตั้งค่า Environment Variables
+```bash
+cp .env.example .env.local
+# แก้ไขค่าต่างๆ ใน .env.local
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 3. ตั้งค่า Database
+```bash
+npx prisma migrate dev --name init
+npm run db:seed
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4. รัน Dev Server
+```bash
+npm run dev
+# เปิด http://localhost:3000
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## ⚙️ Environment Variables
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+ดูตัวอย่างทั้งหมดได้ใน [`.env.example`](.env.example)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Variable | คำอธิบาย |
+|---|---|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `NEXTAUTH_SECRET` | Secret key สำหรับ NextAuth |
+| `LINE_CLIENT_ID` | LINE Channel ID จาก LINE Developers |
+| `LINE_CLIENT_SECRET` | LINE Channel Secret |
+| `NEXT_PUBLIC_LINE_LIFF_ID` | LIFF App ID |
+| `GOOGLE_CLIENT_EMAIL` | Service Account email |
+| `GOOGLE_PRIVATE_KEY` | Service Account private key |
+| `GOOGLE_DRIVE_FOLDER_ID` | Drive Folder สำหรับรูปสินค้า |
+| `GOOGLE_DRIVE_SLIP_FOLDER_ID` | Drive Folder สำหรับสลิป |
+
+---
+
+## 📖 การตั้งค่า LINE Developer
+
+1. ไปที่ [LINE Developers Console](https://developers.line.biz/)
+2. สร้าง Provider และ Channel (LINE Login)
+3. เพิ่ม Callback URL: `http://localhost:3000/api/auth/callback/line`
+4. สร้าง LIFF App → ตั้ง Endpoint URL: `http://localhost:3000`
+5. คัดลอก Channel ID, Channel Secret และ LIFF ID ไปใส่ใน `.env.local`
+
+---
+
+## 🔑 Admin Login เริ่มต้น
+
+หลังรัน `npm run db:seed`:
+- **Username:** `admin`
+- **Password:** `admin123`
+- **URL:** `/admin/login`
+
+> ⚠️ กรุณาเปลี่ยนรหัสผ่านหลังเข้าใช้งานครั้งแรก
+
+---
+
+## 📜 License
+
+MIT License
