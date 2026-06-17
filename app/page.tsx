@@ -1,116 +1,148 @@
+import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import Link from 'next/link'
-import HeroSlideshow from '@/components/shop/hero-slideshow'
+import ShopProductCard from '@/components/shop/shop-product-card'
 
-export default async function HomePage() {
+async function getProducts(search?: string, category?: string) {
+  const where: any = { isActive: true }
+  if (search) where.name = { contains: search, mode: 'insensitive' }
+  if (category) where.category = { slug: category }
+
+  return prisma.product.findMany({
+    where,
+    include: {
+      images: { where: { isPrimary: true }, take: 1 },
+      variants: { where: { isActive: true }, select: { id: true, price: true, color: true, size: true, stock: true } },
+      category: { select: { name: true, slug: true } },
+    },
+    orderBy: { createdAt: 'desc' },
+  })
+}
+
+async function getCategories() {
+  return prisma.category.findMany({ orderBy: { name: 'asc' } })
+}
+
+export default async function HomePage({ searchParams }: { searchParams: Promise<{ search?: string, category?: string }> }) {
   const session = await auth()
+  const params = await searchParams
+
+  const [products, categories] = await Promise.all([
+    getProducts(params.search, params.category),
+    getCategories(),
+  ])
 
   return (
-    <main className="min-h-screen" style={{ background: 'var(--color-bg)', color: 'var(--color-text)' }}>
-
-
-      {/* Hero Section - Split Layout */}
-      <section style={{
-        minHeight: 'calc(100vh - 80px)',
-        display: 'flex',
-        alignItems: 'center',
-        padding: '2rem 1.5rem',
-      }}>
-        <div className="container-custom grid-split grid-split-lg" style={{ height: '100%' }}>
-          
-          <div className="fade-in" style={{ paddingRight: '2rem' }}>
-            <p style={{ textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '0.1em', color: 'var(--color-text-muted)', marginBottom: '1.5rem', fontWeight: 500 }}>
-              คอลเลกชันใหม่ 2026
-            </p>
-            <h1 style={{
-              fontSize: 'clamp(3rem, 5vw, 4.5rem)',
-              fontWeight: 400,
-              lineHeight: 1.1,
-              marginBottom: '1.5rem',
-              letterSpacing: '-0.04em',
-            }}>
-              ความเรียบง่าย <br />
-              <span style={{ fontWeight: 600 }}>คือความดูดี</span> <br />
-              ที่สุด.
-            </h1>
-            <p style={{
-              color: 'var(--color-text-muted)',
-              fontSize: '1rem',
-              maxWidth: '400px',
-              marginBottom: '2.5rem',
-              lineHeight: 1.7,
-            }}>
-              ค้นพบเสื้อผ้าพรีเมียมที่เน้นความมินิมอล พร้อมประสบการณ์สั่งซื้อง่ายๆ ผ่าน LINE
-            </p>
-
-            <div className="hero-buttons">
-              <Link href="/shop" className="btn-primary" style={{ textDecoration: 'none', fontSize: '0.95rem', padding: '0.9rem 2.5rem' }}>
-                เลือกซื้อสินค้า
-              </Link>
-              {!session && (
-                <Link href="/login" style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '0.5rem',
-                  textDecoration: 'none', 
-                  fontSize: '0.95rem', 
-                  padding: '0.8rem 1.5rem', 
-                  background: '#00B900',
-                  color: '#ffffff', 
-                  fontWeight: 600, 
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 14px rgba(0, 185, 0, 0.2)',
-                  transition: 'all 0.2s ease',
+    <main style={{ minHeight: '100vh', background: 'var(--color-bg)', paddingBottom: '80px' }}>
+      <div className="container-custom" style={{ padding: '1rem 1rem 4rem 1rem' }}>
+        
+        {/* Header + Search (Compact) */}
+        <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem' }}>
+          <form method="GET" style={{ flex: 1, display: 'flex' }}>
+            <div style={{ position: 'relative', width: '100%' }}>
+              <input
+                name="search"
+                defaultValue={params.search}
+                placeholder="ค้นหาสินค้า..."
+                style={{ 
+                  width: '100%', padding: '0.6rem 1rem 0.6rem 2.5rem', 
+                  borderRadius: '99px', border: '1px solid var(--color-border)', 
+                  background: 'var(--color-bg-card)', fontSize: '0.9rem' 
                 }}
-                className="hover:-translate-y-0.5 hover:shadow-lg"
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M24 10.275c0-5.366-5.383-9.738-12-9.738-6.616 0-12 4.372-12 9.738 0 4.814 3.94 8.89 9.122 9.593.363.1.84.321.966.699.117.345.037.886 0 1.25l-.226 1.34c-.066.39-.325 1.593 1.391.87 1.716-.723 9.255-5.452 11.517-9.014C23.593 13.623 24 12.028 24 10.275zM19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .26-.148.479-.396.586a.632.632 0 0 1-.718-.126l-2.819-3.927v3.412c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.264.149-.485.405-.592.253-.109.549-.046.732.144l2.796 3.88V8.108c0-.345.282-.63.631-.63.345 0 .627.285.627.63v4.771zm-5.972 0c0 .344-.282.629-.631.629H6.524c-.345 0-.629-.285-.629-.629V8.108c0-.345.284-.63.629-.63.348 0 .63.285.63.63v4.141h1.754c.348 0 .63.285.63.631zM4.646 8.108v4.771c0 .344-.282.629-.63.629-.346 0-.629-.285-.629-.629V8.108c0-.345.283-.63.629-.63.348 0 .63.285.63.63z"/>
-                  </svg>
-                  เข้าสู่ระบบด้วย LINE
-                </Link>
-              )}
+              />
+              <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }}>
+                🔍
+              </span>
             </div>
-          </div>
-
-          {/* Right: Slideshow */}
-          <div className="fade-in" style={{ height: '70vh', width: '100%', minHeight: '500px' }}>
-            <HeroSlideshow />
-          </div>
-
+          </form>
         </div>
-      </section>
 
-      {/* Minimal Features Section */}
-      <section style={{ padding: '6rem 1.5rem', background: 'var(--color-bg)' }}>
-        <div className="container-custom">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '3rem', borderTop: '1px solid var(--color-border)', paddingTop: '4rem' }}>
-            {[
-              { num: '01', title: 'ล็อกอินคลิกเดียว', desc: 'เชื่อมต่อบัญชี LINE ของคุณทันที ไม่ต้องจำรหัสผ่าน' },
-              { num: '02', title: 'สะสมแต้มอัตโนมัติ', desc: 'รับแต้มสะสมทุกครั้งที่ออเดอร์ได้รับการยืนยัน' },
-              { num: '03', title: 'สต็อก Real-time', desc: 'อัปเดตจำนวนสินค้าเรียลไทม์ หมดปัญหาสินค้าหมด' },
-              { num: '04', title: 'จ่ายเงินง่าย', desc: 'รูปแบบการสั่งซื้อ 2 ขั้นตอน พร้อมแนบสลิปผ่านหน้าเว็บ' },
-            ].map((feature) => (
-              <div key={feature.title} style={{ paddingRight: '1rem' }}>
-                <div style={{ fontSize: '0.85rem', color: 'var(--color-text-subtle)', marginBottom: '1rem', fontWeight: 500 }}>{feature.num} //</div>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 500, marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>{feature.title}</h3>
-                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', lineHeight: 1.6 }}>{feature.desc}</p>
-              </div>
+        {/* Category Filters */}
+        {categories.length > 0 && (
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', overflowX: 'auto', paddingBottom: '0.5rem', WebkitOverflowScrolling: 'touch' }}>
+            <Link
+              href="/"
+              style={{
+                padding: '0.4rem 1rem', borderRadius: '99px', fontSize: '0.85rem',
+                textDecoration: 'none', border: '1px solid var(--color-border)',
+                background: !params.category ? 'var(--color-primary-glow)' : 'var(--color-bg-card)',
+                color: !params.category ? 'var(--color-primary)' : 'var(--color-text)',
+                borderColor: !params.category ? 'rgba(232,160,160,0.4)' : 'var(--color-border)',
+                whiteSpace: 'nowrap', flexShrink: 0,
+              }}
+            >
+              ทั้งหมด
+            </Link>
+            {categories.map((cat) => (
+              <Link
+                key={cat.id}
+                href={`/?category=${cat.slug}`}
+                style={{
+                  padding: '0.4rem 1rem', borderRadius: '99px', fontSize: '0.85rem',
+                  textDecoration: 'none', border: '1px solid var(--color-border)',
+                  background: params.category === cat.slug ? 'var(--color-primary-glow)' : 'var(--color-bg-card)',
+                  color: params.category === cat.slug ? 'var(--color-primary)' : 'var(--color-text)',
+                  borderColor: params.category === cat.slug ? 'rgba(232,160,160,0.4)' : 'var(--color-border)',
+                  whiteSpace: 'nowrap', flexShrink: 0,
+                }}
+              >
+                {cat.name}
+              </Link>
             ))}
           </div>
-        </div>
-      </section>
+        )}
 
-      {/* Minimal Footer */}
-      <footer style={{
-        padding: '3rem 1.5rem',
-        textAlign: 'center',
-        color: 'var(--color-text-subtle)',
-        fontSize: '0.8rem',
-        background: 'var(--color-bg-elevated)'
+        {/* Product Grid */}
+        {products.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--color-text-muted)', background: 'var(--color-bg-card)', borderRadius: '12px' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>👕</div>
+            <p>ไม่พบสินค้า</p>
+          </div>
+        ) : (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+            gap: '0.75rem',
+          }}>
+            {products.map((product) => (
+              <ShopProductCard key={product.id} product={{
+                ...product,
+                variants: product.variants.map(v => ({ ...v, price: Number(v.price) }))
+              }} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Floating Checkout Button (Shopee style) */}
+      <Link href="/cart" style={{
+        position: 'fixed',
+        bottom: '20px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 'calc(100% - 2rem)',
+        maxWidth: '400px',
+        background: '#00B900', // LINE Green or we could use primary var(--color-primary)
+        color: 'white',
+        textDecoration: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '0.5rem',
+        padding: '1rem',
+        borderRadius: '99px',
+        fontWeight: 700,
+        fontSize: '1rem',
+        boxShadow: '0 8px 24px rgba(0, 185, 0, 0.3)',
+        zIndex: 50,
       }}>
-        <p>© 2026 Fashion Store. คัดสรรทุกรายละเอียดเพื่อคุณ</p>
-      </footer>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        สรุปคำสั่งซื้อ (LINE)
+      </Link>
     </main>
   )
 }
