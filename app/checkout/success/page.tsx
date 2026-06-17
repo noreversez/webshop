@@ -29,9 +29,8 @@ function SuccessContent() {
         )}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {/* TODO: Add link to LINE OA for tracking */}
-          <a href="#" className="btn-secondary" style={{ textDecoration: 'none' }}>
-            💬 ติดต่อแอดมินผ่าน LINE
+          <a href={process.env.NEXT_PUBLIC_LINE_OA_URL || 'https://lin.ee/placeholder'} target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ textDecoration: 'none', background: '#00B900', color: 'white', borderColor: '#00B900' }}>
+            💬 ติดต่อแอดมิน / แจ้งรับเลขพัสดุทาง LINE
           </a>
           <Link href="/" className="btn-primary" style={{ textDecoration: 'none' }}>
             กลับสู่หน้าแรก

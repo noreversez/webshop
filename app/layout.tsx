@@ -5,6 +5,7 @@ import { Providers } from '@/components/providers'
 import { Toaster } from 'sonner'
 import NextTopLoader from 'nextjs-toploader'
 import Navbar from '@/components/layout/navbar'
+import LineFloatingButton from '@/components/line-floating-button'
 import { auth } from '@/auth'
 
 const notoSansThai = Noto_Sans_Thai({
@@ -49,6 +50,7 @@ export default async function RootLayout({
           <div style={{ paddingTop: '80px' }}>
             {children}
           </div>
+          <LineFloatingButton />
           <Toaster position="bottom-right" />
         </Providers>
       </body>
