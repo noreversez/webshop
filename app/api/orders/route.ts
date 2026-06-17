@@ -6,12 +6,11 @@ import { nanoid } from 'nanoid'
 // POST create order (authenticated customer)
 export async function POST(req: NextRequest) {
   const session = await auth()
-  if (!session || !session.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  // Guest checkout allowed for now since LINE login isn't implemented
+  const userId = session?.user?.id || null
 
   const body = await req.json()
-  const { items, shippingName, shippingPhone, shippingAddr } = body
+  const { items, shippingName, shippingPhone, shippingAddr, slipUrl, slipDriveId } = body
 
   if (!items?.length) {
     return NextResponse.json({ error: 'No items' }, { status: 400 })
@@ -45,12 +44,15 @@ export async function POST(req: NextRequest) {
   const order = await prisma.$transaction(async (tx) => {
     const newOrder = await tx.order.create({
       data: {
-        userId: session.user.id!,
+        userId,
         orderNumber,
         totalAmount,
         shippingName,
         shippingPhone,
         shippingAddr,
+        slipUrl,
+        slipDriveId,
+        slipVerified: false,
         items: {
           create: items.map((item: any) => ({
             productId: variantMap[item.variantId].productId,

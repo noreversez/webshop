@@ -92,13 +92,13 @@ export default async function AdminOrdersPage({
               <div key={order.id} className="glass-card" style={{ padding: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    {order.user.image ? (
+                    {order.user?.image ? (
                       <img src={order.user.image} alt="" style={{ width: 44, height: 44, borderRadius: '50%' }} />
                     ) : (
-                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
+                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--color-bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
                     )}
                     <div>
-                      <div style={{ fontWeight: 600 }}>{order.user.name}</div>
+                      <div style={{ fontWeight: 600 }}>{order.user?.name || order.shippingName}</div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
                         ออเดอร์ #{order.orderNumber}
                       </div>

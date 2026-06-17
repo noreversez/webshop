@@ -109,13 +109,13 @@ export default async function AdminDashboardPage() {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    {order.user.image ? (
+                    {order.user?.image ? (
                       <img src={order.user.image} alt="" style={{ width: 36, height: 36, borderRadius: '50%' }} />
                     ) : (
-                      <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
+                      <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--color-bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
                     )}
                     <div>
-                      <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{order.user.name}</div>
+                      <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{order.user?.name || order.shippingName}</div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>#{order.orderNumber}</div>
                     </div>
                   </div>

@@ -38,7 +38,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       },
     })
 
-    if (awardPoints && pointsToAward > 0) {
+    if (awardPoints && pointsToAward > 0 && order.userId) {
       // Add points to user
       await tx.user.update({
         where: { id: order.userId },

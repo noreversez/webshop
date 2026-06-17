@@ -55,14 +55,14 @@ export default async function OrderDetailPage({ params }: { params: { id: string
             ข้อมูลลูกค้า
           </h3>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-            {order.user.image && <img src={order.user.image} alt="" style={{ width: 44, height: 44, borderRadius: '50%' }} />}
+            {order.user?.image && <img src={order.user.image} alt="" style={{ width: 44, height: 44, borderRadius: '50%' }} />}
             <div>
-              <div style={{ fontWeight: 600 }}>{order.user.name}</div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{order.user.email || 'LINE User'}</div>
+              <div style={{ fontWeight: 600 }}>{order.user?.name || order.shippingName}</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{order.user?.email || 'Guest User / LINE'}</div>
             </div>
           </div>
           <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
-            <div>⭐ แต้มปัจจุบัน: <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}>{order.user.points} แต้ม</span></div>
+            <div>⭐ แต้มปัจจุบัน: <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}>{order.user?.points || 0} แต้ม</span></div>
           </div>
         </div>
 

@@ -14,8 +14,27 @@ export async function POST(req: NextRequest) {
     const timestamp = Date.now()
     const fileName = `${type}_${timestamp}_${file.name}`
     const folderId = type === 'slip'
-      ? process.env.GOOGLE_DRIVE_SLIP_FOLDER_ID!
-      : process.env.GOOGLE_DRIVE_FOLDER_ID!
+      ? process.env.GOOGLE_DRIVE_SLIP_FOLDER_ID
+      : process.env.GOOGLE_DRIVE_FOLDER_ID
+
+    // If Google Drive is not configured, save locally to public/uploads/slips or products
+    if (!folderId || folderId === 'placeholder') {
+      const fs = await import('fs')
+      const path = await import('path')
+      
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads', type === 'slip' ? 'slips' : 'products')
+      
+      // Ensure dir exists
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true })
+      }
+      
+      const filePath = path.join(uploadDir, fileName)
+      fs.writeFileSync(filePath, buffer)
+      
+      const publicUrl = `/uploads/${type === 'slip' ? 'slips' : 'products'}/${fileName}`
+      return NextResponse.json({ fileId: fileName, url: publicUrl })
+    }
 
     const { fileId, publicUrl } = await uploadFileToDrive(
       buffer,
