@@ -51,7 +51,7 @@ export default async function RootLayout({
             {children}
           </div>
           <LineFloatingButton />
-          <Toaster position="bottom-right" />
+          <Toaster position="top-right" />
         </Providers>
       </body>
     </html>

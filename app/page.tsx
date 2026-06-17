@@ -114,35 +114,6 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         )}
       </div>
 
-      {/* Floating Checkout Button (Shopee style) */}
-      <Link href="/cart" style={{
-        position: 'fixed',
-        bottom: '20px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: 'calc(100% - 2rem)',
-        maxWidth: '400px',
-        background: '#00B900', // LINE Green or we could use primary var(--color-primary)
-        color: 'white',
-        textDecoration: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '0.5rem',
-        padding: '1rem',
-        borderRadius: '99px',
-        fontWeight: 700,
-        fontSize: '1rem',
-        boxShadow: '0 8px 24px rgba(0, 185, 0, 0.3)',
-        zIndex: 50,
-      }}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="9" cy="21" r="1"></circle>
-          <circle cx="20" cy="21" r="1"></circle>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-        </svg>
-        สรุปคำสั่งซื้อ (LINE)
-      </Link>
     </main>
   )
 }
