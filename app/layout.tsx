@@ -6,6 +6,7 @@ import { Toaster } from 'sonner'
 import NextTopLoader from 'nextjs-toploader'
 import Navbar from '@/components/layout/navbar'
 import LineFloatingButton from '@/components/line-floating-button'
+import CartFloatingButton from '@/components/cart-floating-button'
 import { auth } from '@/auth'
 
 const notoSansThai = Noto_Sans_Thai({
@@ -51,6 +52,7 @@ export default async function RootLayout({
             {children}
           </div>
           <LineFloatingButton />
+          <CartFloatingButton />
           <Toaster position="top-right" />
         </Providers>
       </body>
