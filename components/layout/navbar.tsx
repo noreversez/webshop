@@ -64,10 +64,7 @@ export default function Navbar({ session }: { session: any }) {
           <Link href="/" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <span style={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.03em' }}>
-                FASHION
-              </span>
-              <span style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem', marginLeft: '0.5rem', letterSpacing: '0.15em', fontWeight: 600 }}>
-                STORE
+                rpcashop
               </span>
             </div>
           </Link>

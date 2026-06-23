@@ -20,7 +20,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Fashion Store | ร้านเสื้อผ้าแฟชั่น',
+  title: 'rpcashop | ร้านเสื้อผ้าแฟชั่น',
   description: 'ร้านขายเสื้อผ้าแฟชั่น คุณภาพพรีเมียม สั่งซื้อง่ายผ่าน LINE',
   keywords: 'เสื้อผ้า, แฟชั่น, ร้านค้าออนไลน์',
 }
